@@ -5,11 +5,12 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "next/core-web-vitals",
+    "next",
     "plugin:jest/recommended",
     "plugin:jest/style",
     "plugin:testing-library/react",
   ],
-  parser: "@typescript-eslint/parser",
+  parser: "@typescript-es.lint/parser",
   parserOptions: {
     project: "./tsconfig.json",
     ecmaFeatures: {
@@ -18,5 +19,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  rules: {},
+  rules: {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+  },
 };
