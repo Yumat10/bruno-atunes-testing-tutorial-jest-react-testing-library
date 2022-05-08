@@ -10,7 +10,7 @@ module.exports = {
     "plugin:jest/style",
     "plugin:testing-library/react",
   ],
-  parser: "@typescript-es.lint/parser",
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "./tsconfig.json",
     ecmaFeatures: {
