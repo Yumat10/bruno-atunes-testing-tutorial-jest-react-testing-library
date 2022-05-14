@@ -1,4 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { Counter } from './Counter';
 import user from '@testing-library/user-event';
 
@@ -17,22 +21,30 @@ describe('Counter', () => {
     });
 
     describe('when the incrementor changes to 5 and "+" button is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         user.type(screen.getByLabelText(/Incrementor/), '{selectall}5');
         user.click(screen.getByRole('button', { name: 'Add to Counter' }));
+        await screen.findByText('Current Count: 15');
       });
 
       it('renders "Current Count: 15"', () => {
         expect(screen.getByText('Current Count: 15')).toBeInTheDocument();
       });
 
+      it('renders too big, and will disappear after 300ms"', async () => {
+        await waitForElementToBeRemoved(() =>
+          screen.queryByText('I am too small')
+        );
+      });
+
       describe('when the incrementor changes to empty string and "+" button is clicked', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           user.type(
             screen.getByLabelText(/Incrementor/),
             '{selectall}{delete}'
           );
           user.click(screen.getByRole('button', { name: 'Add to Counter' }));
+          await screen.findByText('Current Count: 16');
         });
 
         it('renders "Current Count: 16"', () => {
@@ -42,11 +54,12 @@ describe('Counter', () => {
     });
 
     describe('when the incrementor changes to 25 and "-" button is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         user.type(screen.getByLabelText(/Incrementor/), '{selectall}25');
         user.click(
           screen.getByRole('button', { name: 'Subtract from Counter' })
         );
+        await screen.findByText('Current Count: -15');
       });
 
       it('renders "Current Count: -15"', () => {
@@ -69,10 +82,11 @@ describe('Counter', () => {
     });
 
     describe('when - is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         user.click(
           screen.getByRole('button', { name: 'Subtract from Counter' })
         );
+        await screen.findByText('Current Count: -1');
       });
 
       it('renders "Current count: 1"', () => {
@@ -81,8 +95,9 @@ describe('Counter', () => {
     });
 
     describe('when + is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         user.click(screen.getByRole('button', { name: 'Add to Counter' }));
+        await screen.findByText('Current Count: 1');
       });
 
       it('renders "Current count: -1"', () => {
