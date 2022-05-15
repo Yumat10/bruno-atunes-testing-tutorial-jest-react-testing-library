@@ -26,45 +26,49 @@ export function PhotosList() {
 }
 
 function List({ refresh, name }: { refresh: number; name: string }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(0);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-
-      try {
-        const r = await axios.get<Photo[]>(`/api/photos?name=${name}`);
-        setPhotos(r.data);
-        setError('');
-      } catch (e) {
-        // eslint-disable-next-line
-        setError(e.response.data.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     // async function load() {
-    //   setLoading(true);
+    //   setLoading((l) => l + 1);
 
     //   try {
-    //     const r = await fetch(`/api/photos?name=${name}`);
-    //     const json = await r.json();
-
-    //     if (!r.ok) {
-    //       throw new Error(json.message);
-    //     }
-
-    //     setPhotos(json);
+    //     const r = await axios.get<Photo[]>(`/api/photos?name=${name}`);
+    //     setPhotos(r.data);
     //     setError('');
     //   } catch (e) {
-    //     setError(e.message);
+    //     // eslint-disable-next-line
+    //     setError(e?.response.data.message);
     //   } finally {
-    //     setLoading(false);
+    //     setLoading((l) => l - 1);
     //   }
     // }
+
+    async function load() {
+      setLoading((l) => l + 1);
+
+      try {
+        const r = await fetch(`/api/photos?name=${name}`);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const json = await r.json();
+
+        if (!r.ok) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          throw new Error(json.message);
+        }
+
+        setPhotos(json);
+        setError('');
+      } catch (e) {
+        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        setError(e.message);
+      } finally {
+        setLoading((l) => l - 1);
+      }
+    }
 
     void load();
   }, [refresh, name]);
