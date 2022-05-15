@@ -5,12 +5,24 @@ import { Fetcher, PublicConfiguration } from 'swr/dist/types';
 export function MySwrConfig({
   children,
   swrConfig,
+  disableCache,
 }: {
   children?: ReactNode;
   // eslint-disable-next-line
   swrConfig?: Partial<PublicConfiguration<any, any, Fetcher<any>>>;
+  disableCache?: boolean;
 }) {
-  return (
+  return disableCache ? (
+    <SWRConfig
+      value={{
+        fetcher: customFetcher,
+        ...swrConfig,
+        provider: () => new Map(),
+      }}
+    >
+      {children}
+    </SWRConfig>
+  ) : (
     <SWRConfig value={{ fetcher: customFetcher, ...swrConfig }}>
       {children}
     </SWRConfig>
